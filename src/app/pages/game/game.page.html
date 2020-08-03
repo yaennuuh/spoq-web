@@ -1,0 +1,294 @@
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" [ngClass]="{'hidden-md-down': mode === 'multiplayer'}">
+        <h1>SpoQ</h1>
+      </ion-col>
+      <ion-col size="12" *ngIf="unknownMode">
+        <h2>Spielmodus nicht erkannt!</h2>
+        <ion-button color="danger" routerLink="/" routerDirection="root">Zurück zum Hauptmenü</ion-button>
+      </ion-col>
+      <ion-col size="12" *ngIf="notEnoughSongsError">
+        <h2>Die Playlist enthält zu wenig Songs für {{ numberOfRounds }} Runden!</h2>
+        <ion-button color="danger" routerLink="/playlist/{{mode}}" routerDirection="root">Zurück zur Playlist wahl</ion-button>
+      </ion-col>
+    </ion-row>
+
+    <!-- Show player -->
+    <!-- Desktop view -->
+    <ion-row [ngClass]="{'hidden-md-down': mode === 'multiplayer'}" *ngIf="!unknownMode && !notEnoughSongsError">
+      <ion-col size-md="3" *ngIf="mode === 'singleplayer'"></ion-col>
+      <ion-col size="12" size-md="6" *ngIf="!winner">
+        <div id="player1" class="player-container"
+          [ngClass]="{'answered': players[0].answer, 'correct-answer': players[0].correctAnswer, 'wrong-answer': players[0].wrongAnswer}">
+          <div class="player-name">{{ this.players[0].name }}</div>
+          <div class="player-points">{{ this.players[0].points }}</div>
+        </div>
+      </ion-col>
+      <ion-col size="12" size-md="6" *ngIf="!winner && mode === 'multiplayer'">
+        <div id="player2" class="player-container"
+          [ngClass]="{'answered': players[1].answer, 'correct-answer': players[1].correctAnswer, 'wrong-answer': players[1].wrongAnswer}">
+          <div class="player-name">{{ this.players[1].name }}</div>
+          <div class="player-points">{{ this.players[1].points }}</div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <!-- END Desktop view -->
+    <!-- END Show player -->
+
+    <!-- Show results -->
+    <!-- Desktop & Mobile view -->
+    <ion-row *ngIf="!unknownMode && !notEnoughSongsError">
+      <ion-col size="12" *ngIf="winner && (!draw || mode === 'singleplayer')">
+        <h2>Gratuliere, {{ winner.name }}!</h2>
+        <h4>Du hast mit {{ winner.points }} Punkten gewonnen!</h4>
+      </ion-col>
+      <ion-col size="12" *ngIf="winner && draw && mode === 'multiplayer'">
+        <h2>Unentschieden!</h2>
+        <h4>Beide spieler erreichten {{ winner.points }} Punkte!</h4>
+      </ion-col>
+      <ion-col size="12" *ngIf="winner">
+        <ion-button color="primary" (click)="initGame()">Erneut spielen</ion-button>
+        <ion-button color="primary" routerLink="/playlist/{{mode}}" routerDirection="root">Neue Playlist</ion-button>
+      </ion-col>
+    </ion-row>
+    <!-- END Desktop & Mobile view -->
+    <!-- END Show results -->
+
+    <!-- Round information -->
+    <ion-row [ngClass]="{'hidden-md-down': mode === 'multiplayer'}" *ngIf="!unknownMode && !notEnoughSongsError">
+      <ion-col size="12" *ngIf="initialCounter === 0 && !winner">
+        <h2>
+          Runde {{ roundCounter }}/{{ numberOfRounds }}
+        </h2>
+        <h2>
+          {{ secondsPerRound }}
+        </h2>
+      </ion-col>
+      <ion-col size="12" *ngIf="initialCounter != 0 && !winner">
+        <h3>
+          Spiel startet in {{ initialCounter }}..
+        </h3>
+      </ion-col>
+    </ion-row>
+    <!-- END Round information -->
+
+    <!-- Show answers -->
+    <!-- Desktop view -->
+    <div [ngClass]="{'hidden-md-down': mode === 'multiplayer'}"
+      *ngIf="!unknownMode && !notEnoughSongsError && !winner && answers && answers.length">
+      <ion-row class="ion-justify-content-around">
+        <ion-col size="1" class="player-controller-key hidden-md-down"
+          [ngClass]="{'answered': (players[0].answer == 1 && (mode === 'singleplayer' || !gameIsRunning))}">{{ players[0].keys['1'] }}
+        </ion-col>
+
+        <ion-col size="12" size-md="8" class="song-selection" [ngClass]="{'correct': answers[0].correct, 'answered': (players[0].answer == 1 && mode === 'singleplayer')}"
+          (click)="setPlayersAnswer(players[0].keys['1'])">
+          <p class="artist-name">{{ answers[0].artist }}</p>
+          <p class="song-name">{{ answers[0].title }}</p>
+        </ion-col>
+
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'singleplayer'"
+          [ngClass]="{'answered': (players[0].answer == 1 && mode === 'singleplayer')}">
+          {{ players[0].keys['1'] }}
+        </ion-col>
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'multiplayer'" [ngClass]="{'answered': (players[1].answer == 1 && !gameIsRunning)}">
+          {{ players[1].keys['1'] }}
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-around">
+        <ion-col size="1" class="player-controller-key hidden-md-down"
+          [ngClass]="{'answered': (players[0].answer == 2 && (mode === 'singleplayer' || !gameIsRunning))}">{{ players[0].keys['2'] }}
+        </ion-col>
+
+        <ion-col size="12" size-md="8" class="song-selection" [ngClass]="{'correct': answers[1].correct, 'answered': (players[0].answer == 2 && mode === 'singleplayer')}"
+          (click)="setPlayersAnswer(players[0].keys['2'])">
+          <p class="artist-name">{{ answers[1].artist }}</p>
+          <p class="song-name">{{ answers[1].title }}</p>
+        </ion-col>
+
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'singleplayer'"
+          [ngClass]="{'answered': (players[0].answer == 2 && mode === 'singleplayer')}">
+          {{ players[0].keys['2'] }}
+        </ion-col>
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'multiplayer'" [ngClass]="{'answered': (players[1].answer == 2 && !gameIsRunning)}">
+          {{ players[1].keys['2'] }}
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-around">
+        <ion-col size="1" class="player-controller-key hidden-md-down"
+          [ngClass]="{'answered': (players[0].answer == 3 && (mode === 'singleplayer' || !gameIsRunning))}">{{ players[0].keys['3'] }}
+        </ion-col>
+
+        <ion-col size="12" size-md="8" class="song-selection" [ngClass]="{'correct': answers[2].correct, 'answered': (players[0].answer == 3 && mode === 'singleplayer')}"
+          (click)="setPlayersAnswer(players[0].keys['3'])">
+          <p class="artist-name">{{ answers[2].artist }}</p>
+          <p class="song-name">{{ answers[2].title }}</p>
+        </ion-col>
+
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'singleplayer'"
+          [ngClass]="{'answered': (players[0].answer == 3 && mode === 'singleplayer')}">
+          {{ players[0].keys['3'] }}
+        </ion-col>
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'multiplayer'" [ngClass]="{'answered': (players[1].answer == 3 && !gameIsRunning)}">
+          {{ players[1].keys['3'] }}
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-around">
+        <ion-col size="1" class="player-controller-key hidden-md-down"
+          [ngClass]="{'answered': (players[0].answer == 4 && (mode === 'singleplayer' || !gameIsRunning))}">{{ players[0].keys['4'] }}
+        </ion-col>
+
+        <ion-col size="12" size-md="8" class="song-selection" [ngClass]="{'correct': answers[3].correct, 'answered': (players[0].answer == 4 && mode === 'singleplayer')}"
+          (click)="setPlayersAnswer(players[0].keys['4'])">
+          <p class="artist-name">{{ answers[3].artist }}</p>
+          <p class="song-name">{{ answers[3].title }}</p>
+        </ion-col>
+
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'singleplayer'"
+          [ngClass]="{'answered': (players[0].answer == 4 && mode === 'singleplayer')}">
+          {{ players[0].keys['4'] }}
+        </ion-col>
+        <ion-col size="1" class="player-controller-key hidden-md-down" *ngIf="mode === 'multiplayer'" [ngClass]="{'answered': (players[1].answer == 4 && !gameIsRunning)}">
+          {{ players[1].keys['4'] }}
+        </ion-col>
+      </ion-row>
+    </div>
+    <!-- END Desktop view -->
+
+
+    <!-- Mobile Multiplayer view -->
+    <!-- Player 2 -->
+    <div class="mobile-player-2 hidden-sm-up" *ngIf="mode === 'multiplayer'">
+      <ion-row class="upsidedown">
+        <ion-col size="12" *ngIf="initialCounter != 0 && !winner">
+          <h3>
+            Spiel startet in {{ initialCounter }}..
+          </h3>
+        </ion-col>
+      </ion-row>
+      <div class="upsidedown mobile-multiplayer"
+        *ngIf="!unknownMode && !notEnoughSongsError && mode === 'multiplayer' && !winner && answers && answers.length">
+        <ion-row *ngIf="!unknownMode && !notEnoughSongsError">
+          <ion-col size="12" *ngIf="initialCounter === 0 && !winner">
+            <h1>SpoQ</h1>
+            <div class="mobile-multiplayer-answer"
+              [ngClass]="{'answered': players[1].answer, 'correct-answer': players[1].correctAnswer, 'wrong-answer': players[1].wrongAnswer}">
+              <h2>
+                Runde {{ roundCounter }}/{{ numberOfRounds }} - {{ this.players[1].points }} Punkte
+              </h2>
+              <h2>
+                {{ secondsPerRound }}
+              </h2>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[0].correct, 'wrong-answer': (!gameIsRunning && players[1].answer == 1 && !answers[0].correct)}"
+            (click)="setPlayersAnswer(players[1].keys['1'])">
+            <p class="artist-name">{{ answers[0].artist }}</p>
+            <p class="song-name">{{ answers[0].title }}</p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[1].correct, 'wrong-answer': (!gameIsRunning && players[1].answer == 2 && !answers[1].correct)}"
+            (click)="setPlayersAnswer(players[1].keys['2'])">
+            <p class="artist-name">{{ answers[1].artist }}</p>
+            <p class="song-name">{{ answers[1].title }}</p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[2].correct, 'wrong-answer': (!gameIsRunning && players[1].answer == 3 && !answers[2].correct)}"
+            (click)="setPlayersAnswer(players[1].keys['3'])">
+            <p class="artist-name">{{ answers[2].artist }}</p>
+            <p class="song-name">{{ answers[2].title }}</p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[3].correct, 'wrong-answer': (!gameIsRunning && players[1].answer == 4 && !answers[3].correct)}"
+            (click)="setPlayersAnswer(players[1].keys['4'])">
+            <p class="artist-name">{{ answers[3].artist }}</p>
+            <p class="song-name">{{ answers[3].title }}</p>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+    <!-- END Player 2 -->
+
+    <!-- Player 1 -->
+    <div class="mobile-player-1 hidden-sm-up" *ngIf="mode === 'multiplayer'">
+      <ion-row>
+        <ion-col size="12" *ngIf="initialCounter != 0 && !winner">
+          <h3>
+            Spiel startet in {{ initialCounter }}..
+          </h3>
+        </ion-col>
+      </ion-row>
+      <div class="hidden-sm-up mobile-multiplayer"
+        *ngIf="!unknownMode && !notEnoughSongsError && mode === 'multiplayer' && !winner && answers && answers.length">
+        <ion-row *ngIf="!unknownMode && !notEnoughSongsError">
+          <ion-col size="12" *ngIf="initialCounter === 0 && !winner">
+            <h1>SpoQ</h1>
+            <div class="mobile-multiplayer-answer"
+              [ngClass]="{'answered': players[0].answer, 'correct-answer': players[0].correctAnswer, 'wrong-answer': players[0].wrongAnswer}">
+              <h2>
+                Runde {{ roundCounter }}/{{ numberOfRounds }} - {{ this.players[0 ].points }} Punkte
+              </h2>
+              <h2>
+                {{ secondsPerRound }}
+              </h2>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[0].correct, 'wrong-answer': (!gameIsRunning && players[0].answer == 1 && !answers[0].correct)}"
+            (click)="setPlayersAnswer(players[0].keys['1'])">
+            <p class="artist-name">{{ answers[0].artist }}</p>
+            <p class="song-name">{{ answers[0].title }}</p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[1].correct, 'wrong-answer': (!gameIsRunning && players[0].answer == 2 && !answers[1].correct)}"
+            (click)="setPlayersAnswer(players[0].keys['2'])">
+            <p class="artist-name">{{ answers[1].artist }}</p>
+            <p class="song-name">{{ answers[1].title }}</p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[2].correct, 'wrong-answer': (!gameIsRunning && players[0].answer == 3 && !answers[2].correct)}"
+            (click)="setPlayersAnswer(players[0].keys['3'])">
+            <p class="artist-name">{{ answers[2].artist }}</p>
+            <p class="song-name">{{ answers[2].title }}</p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-around">
+          <ion-col size="12" class="song-selection" [ngClass]="{'correct': answers[3].correct, 'wrong-answer': (!gameIsRunning && players[0].answer == 4 && !answers[3].correct)}"
+            (click)="setPlayersAnswer(players[0].keys['4'])">
+            <p class="artist-name">{{ answers[3].artist }}</p>
+            <p class="song-name">{{ answers[3].title }}</p>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+    <!-- END Player 1 -->
+    <!-- END Mobile Multiplayer view -->
+    <!-- END Show answers -->
+
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="winner">
+  <ion-toolbar style="text-align: center;">
+    <ion-button color="danger" routerLink="/" routerDirection="root">Zurück zum Hauptmenü</ion-button>
+  </ion-toolbar>
+</ion-footer>

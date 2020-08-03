@@ -1,0 +1,43 @@
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <h1>SpoQ</h1>
+        <h2>Playlist auswählen</h2>
+      </ion-col>
+      <ion-col size="12" size-md="6" offset-md="3">
+        <ion-input [(ngModel)]="searchText" (keydown)="keyDownFunction($event)" placeholder="Playlist suchen">
+        </ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-align-items-center" *ngIf="selectedPlaylist">
+      <ion-col>
+        <ion-icon (click)="setPlaylist(-1)" name="arrow-back-outline"></ion-icon>
+        <img src="{{selectedPlaylist.images[0].url}}">
+        <ion-icon (click)="setPlaylist(1)" name="arrow-forward-outline"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="selectedPlaylist">
+      <ion-col size="12">
+        <div class="playlist-title">
+          {{(selectedPlaylist.name.length > 30) ? (selectedPlaylist.name | slice:0:30) + '..': (selectedPlaylist.name)}}
+        </div>
+      </ion-col>
+      <ion-col size="12" *ngIf="selectedPlaylist.tracks.total >= (3 + numberOfRounds)">
+        <ion-button class="hidden-md-down" color="primary" routerLink="/game/{{mode}}/{{selectedPlaylist.id}}" routerDirection="root">Select
+        </ion-button>
+        <ion-button class="hidden-sm-up" color="primary" routerLink="/mobileaudio/{{mode}}/{{selectedPlaylist.id}}" routerDirection="root">Select
+        </ion-button>
+      </ion-col>
+      <ion-col size="12" *ngIf="selectedPlaylist.tracks.total < (3 + numberOfRounds)">
+        Zu wenig Songs für {{ numberOfRounds }} Runden!
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar style="text-align: center;">
+    <ion-button color="danger" routerLink="/" routerDirection="root">Zurück</ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,26 @@
+ion-input {
+    background: none;
+    border-bottom: 1px solid #ffffff;
+    color: #ffffff;
+    font-size: 36px;
+}
+
+ion-icon {
+    height: 182px;
+    margin: 0px 10px;
+    font-size: 36px;
+    line-height: 200px;
+    cursor: pointer;
+    &.disabled {
+        visibility: hidden;
+    }
+}
+
+.playlist-title {
+    font-size: 32px;
+}
+
+img {
+    height: 200px;
+    width: 200px;
+}

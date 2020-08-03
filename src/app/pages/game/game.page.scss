@@ -1,0 +1,103 @@
+.player-container {
+    background: #1e1e1e;
+    height: 80px;
+    padding: 10px 0px;
+
+    .player-name {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    .player-points {
+        font-size: 24px;
+    }
+}
+
+.player-controller-key {
+    line-height: 50px;
+    margin-bottom: 10px;
+    background: #1e1e1e;
+    text-transform: uppercase;
+}
+
+.artist-name,
+.song-name {
+    color: white;
+}
+
+.artist-name {
+    font-style: italic;
+    font-size: 16px;
+    margin: 0px;
+}
+.song-name {
+    font-size: 20px;
+    margin: 0px;
+}
+
+.song-selection {
+    background: #1e1e1e;
+    margin-bottom: 10px;
+
+    &.correct {
+        background: #1db954;
+        color: #191414;
+    }
+}
+
+.upsidedown {
+    transform: rotate(180deg);
+}
+
+.mobile-player-1 {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.mobile-player-2 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.mobile-multiplayer {
+    h1 {
+        font-size: 24px;
+        margin: 3px 0px;
+    }
+    h2 {
+        font-size: 16px;
+        line-height: 16px;
+        margin: 5px 0px;
+    }
+
+    .artist-name {
+        font-size: 12px;
+    }
+    .song-name {
+        font-size: 16px;
+    }
+}
+
+.mobile-multiplayer-answer {
+    padding: 3px 0px;
+}
+
+.answered {
+    background: #ffffff;
+    color: #191414;
+    .artist-name, .song-name {
+        color: #191414;
+    }
+}
+.correct-answer {
+    background: #1db954;
+    color: #ffffff;
+}
+
+.wrong-answer {
+    background: red;
+    color: #ffffff;
+}

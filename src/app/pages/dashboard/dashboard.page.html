@@ -1,0 +1,32 @@
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <h1>SpoQ</h1>
+      </ion-col>
+      <ion-col size="12">
+        <div *ngIf="!user">
+          <p>Um zu spielen, melde dich bitte mit deinem Spotify Account an.</p>
+          <ion-button color="primary" (click)="login()">Anmelden</ion-button>
+        </div>
+        <div *ngIf="user">
+          <h3>Angemeldet als {{user.display_name}}</h3>
+          <ion-button color="primary" routerLink="/playlist/singleplayer" routerDirection="root">Einzelspieler
+          </ion-button>
+          <ion-button color="primary" routerLink="/playlist/multiplayer" routerDirection="root">Duell Modus</ion-button>
+        </div>
+        <div>
+          <ion-button color="secondary" routerLink="/safari" routerDirection="root">Desktop Safari Browser
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="user">
+  <ion-toolbar style="text-align: center;">
+    <ion-button color="primary" routerLink="/settings" routerDirection="root">Einstellungen</ion-button>
+    <ion-button color="danger" (click)="logout()">Abmelden</ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,98 @@
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <h1>SpoQ</h1>
+        <h2>Einstellungen</h2>
+      </ion-col>
+      <ion-col size="12">
+        <ion-button color="primary" (click)="view = 'game'">Game</ion-button>
+        <ion-button color="primary" (click)="view = 'player1'">Player 1</ion-button>
+        <ion-button color="primary" (click)="view = 'player2'" class="hidden-md-down">Player 2</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="view === 'game'">
+      <ion-col size="12" offset-md="4" size-md="4">
+        <ion-item>
+          <ion-label position="floating">Anzahl Runden</ion-label>
+          <ion-input type="number" [(ngModel)]="settings.numberOfRounds" min="3" max="10"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Sekunde pro Runden</ion-label>
+          <ion-input type="number" [(ngModel)]="settings.secondsPerRound" min="5" max="30"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Punkte pro Runden</ion-label>
+          <ion-input type="number" [(ngModel)]="settings.possiblePoints" min="5" max="30"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="view === 'player1'">
+      <ion-col size="12" offset-md="4" size-md="4">
+        <ion-item>
+          <ion-label position="floating">Spieler</ion-label>
+          <ion-input type="text" [(ngModel)]="settings.players[0].name" maxlength="12"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 1</ion-label>
+          <ion-input [(ngModel)]="settings.players[0]['keys']['1']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 2</ion-label>
+          <ion-input [(ngModel)]="settings.players[0]['keys']['2']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 3</ion-label>
+          <ion-input [(ngModel)]="settings.players[0]['keys']['3']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 4</ion-label>
+          <ion-input [(ngModel)]="settings.players[0]['keys']['4']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="view === 'player2'" class="hidden-md-down">
+      <ion-col size="12" offset-md="4" size-md="4">
+        <ion-item>
+          <ion-label position="floating">Spieler</ion-label>
+          <ion-input type="text" [(ngModel)]="settings.players[1].name" maxlength="12"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 1</ion-label>
+          <ion-input [(ngModel)]="settings.players[1]['keys']['1']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 2</ion-label>
+          <ion-input [(ngModel)]="settings.players[1]['keys']['2']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 3</ion-label>
+          <ion-input [(ngModel)]="settings.players[1]['keys']['3']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+        <br />
+        <ion-item>
+          <ion-label position="floating">Auswahl 4</ion-label>
+          <ion-input [(ngModel)]="settings.players[1]['keys']['4']" type="text" maxlength="1"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-button color="primary" (click)="save()">Speichern</ion-button>
+    <ion-button color="danger" routerLink="/" routerDirection="root">Zurück</ion-button>
+  </ion-toolbar>
+</ion-footer>
